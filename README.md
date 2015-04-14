@@ -30,9 +30,18 @@ v1/v2 are the same.
 1000000
 sort(): 0.49 seconds
 v1/v2 are different.
-
+insertion_sort(): 12849.3 seconds
+v1/v2 are the same.
 
 sort():O(nlogn)
-insertion_sort():O(n2)
+insertion_sort():O(n^2)
+兩者的時間複雜度比為nlogn : n^2 = logn : n
+n = 1000    = 3 : 1000    -->(實際測試sort()的速度太快無法計算)
+n = 10000   = 4 : 10000   -->(實際測試sort()的速度太快無法計算)
+n = 100000  = 5 : 100000  -->實際測試所得數據為0.04 : 128.21，比理論上的數據快，顯示並非為最糟情況。
+n = 1000000 = 6 : 1000000 -->實際測試所得數據為0.49 : 12849.3，比理論上的數據快，顯示並非為最糟情況。
 
-
+而同依排序法在不同排序個數所得時間相比上
+sort()的速度是正比於n : n*10 --> t*10
+insertion_sort()則是n^2的關係 : n*10 --> t*100
+實際上可得證。
