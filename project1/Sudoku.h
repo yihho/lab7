@@ -17,8 +17,8 @@ class Sudoku
 	bool checkUnity(int arr[]);
 	bool checkCell(int arr[]);
 	int Ans[sudokuSize];
-	int getFirstZeroIndex();
 	bool isCorrect();
-	bool Solution();
 	int A;
+	bool check(int, int);
+	void DFS(int);
 };

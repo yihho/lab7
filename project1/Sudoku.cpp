@@ -147,6 +147,12 @@ void Sudoku::ReadIn()
 {
     for(int i = 0;i < sudokuSize;i++)
 	cin >> map[i];
+    for(int i = 0;i < sudokuSize;i++)
+    {
+	cout << map[i] << ' ';
+	if(i % 12 == 11)
+	    cout << endl;
+    } 
     cout << endl;
 }
 
@@ -194,6 +200,67 @@ bool Sudoku::checkCell(int arr[] )
     return true;
 }
 
+bool Sudoku::check(int n, int key)
+{
+    for(int i = 0;i < 12;i++)    //check rows
+    {
+	int j = (n / 12) * 12 + i;
+	if(map[j] == key)
+	    return false;
+    }
+    
+    for(int i = 0;i < 144;i += 12)    //check columns
+    {
+	if(map[(n % 12) + i] == key)
+	    return false;
+    }
+    
+    int i, j, k;    //check cells
+    i = n / 12;
+    j = n % 12;
+    k = (i / 3) * 4 + (j / 3);
+    for(int x = 0;x < 9;x++)
+    {
+        int l  = 36 * (k / 4) + 3 * (k % 4) + 12 * (x / 3) + (x % 3);
+	if(map[l] == key)
+	   return false;
+    }
+    return true;
+}
+
+void Sudoku::DFS(int n)
+{
+    if(n > 143)
+    {
+	for(int i = 0;i < 144;i++)
+	{
+	    Ans[i] = map[i];
+	}
+    	return;
+    }
+        
+    else
+    {
+	if(map[n] != 0)
+        {
+	    DFS(n + 1);
+        }
+
+        else
+        {
+	    for(int i = 1;i <= 9;i++)
+	    {
+	        if(check(n, i))
+	        {
+	            map[n] = i;
+		    DFS(n + 1);		   
+	//	    map[n] = 0;
+		}
+	    }
+	}
+    }
+}
+
 bool Sudoku::isCorrect()
 {
     bool check_result;
@@ -234,65 +301,18 @@ bool Sudoku::isCorrect()
     return true;
 }
 
-int Sudoku::getFirstZeroIndex()
-{
-    for(int i = 0;i < sudokuSize;++i)
-    {
-        if(map[i] == 0)
-            return i;
-    }
-    return -1;
-}
-
-bool Sudoku::Solution()
-{
-    int firstZero;
-    firstZero = getFirstZeroIndex();
-    if(firstZero == -1)
-    {
-	if(isCorrect() == true)
-	    return true;
-	else
-	    return false;
-    }
-    else
-    {
-	for(int n = 1;n <= 9;++n)
-	{
-	    map[firstZero] = n;
-	    if(Solution())
-		return true;
-	}
-	return false;
-   }
-}
-
 void Sudoku::Solve()
 {
-    if(Solution())
-    {
-	cout << "1" << endl;
-	for(int i = 0;i < sudokuSize;i++)
+	DFS(0);
+
+	cout << "1" << endl;	
+	if(isCorrect())
 	{
-	    Ans[i] = map[i];
-	    cout << Ans[i] << " ";
-	    if(i % 12 == 11)
-		cout << endl;
+	    for(int i = 0;i < sudokuSize;i++)
+  	    {
+	        cout << Ans[i] << " ";
+	        if(i % 12 == 11)
+		    cout << endl;
+	    }
 	}
-    }
-    else
-        cout << "0" << endl;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
