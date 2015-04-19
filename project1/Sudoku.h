@@ -9,17 +9,16 @@ class Sudoku
         void GiveQuestion();
         void ReadIn();
         void Solve();
-        static const int sudokuSize = 81;
+        static const int sudokuSize = 144;
 
     private:
         int map[sudokuSize];
-        int Origin[sudokuSize];
-	int Question[sudokuSize];
 	int R;
 	bool checkUnity(int arr[]);
+	bool checkCell(int arr[]);
 	int Ans[sudokuSize];
-	void setElement(int index,int value);
 	int getFirstZeroIndex();
 	bool isCorrect();
-	int Solution();
+	bool Solution();
+	int A;
 };
