@@ -8,6 +8,7 @@ Sudoku::Sudoku()
 {
     for(int i = 1;i < sudokuSize;i++)
 	map[sudokuSize] = 0;
+	copy[sudokuSize] = 0;
 }
 
 void Sudoku::GiveQuestion()
@@ -146,14 +147,10 @@ void Sudoku::GiveQuestion()
 void Sudoku::ReadIn()
 {
     for(int i = 0;i < sudokuSize;i++)
-	cin >> map[i];
-    for(int i = 0;i < sudokuSize;i++)
     {
-	cout << map[i] << ' ';
-	if(i % 12 == 11)
-	    cout << endl;
-    } 
-    cout << endl;
+	cin >> map[i];
+	copy[i] = map[i];
+    }
 }
 
 bool Sudoku::checkUnity(int arr[] )
@@ -234,14 +231,14 @@ void Sudoku::DFS(int n)
     {
 	for(int i = 0;i < 144;i++)
 	{
-	    Ans[i] = map[i];
+	    Ans[i] = copy[i];
 	}
     	return;
     }
         
     else
     {
-	if(map[n] != 0)
+	if(copy[n] != 0)
         {
 	    DFS(n + 1);
         }
@@ -252,9 +249,40 @@ void Sudoku::DFS(int n)
 	    {
 	        if(check(n, i))
 	        {
-	            map[n] = i;
+	            copy[n] = i;
 		    DFS(n + 1);		   
-	//	    map[n] = 0;
+		}
+	    }
+	}
+    }
+}
+
+void Sudoku::dfs(int n)
+{
+    if(n > 143)
+    {
+	for(int i = 0;i < 144;i++)
+	{
+	    Ans_b[i] = map[i];
+	}
+    	return;
+    }
+        
+    else
+    {
+	if(map[n] != 0)
+        {
+	    dfs(n + 1);
+        }
+
+        else
+        {
+	    for(int i = 1;i <= 9;i++)
+	    {
+	        if(check(n, i))
+	        {
+	            map[n] = i;
+		    dfs(n + 1);		  
 		}
 	    }
 	}
@@ -304,15 +332,25 @@ bool Sudoku::isCorrect()
 void Sudoku::Solve()
 {
 	DFS(0);
-
-	cout << "1" << endl;	
+	dfs(0);
 	if(isCorrect())
 	{
 	    for(int i = 0;i < sudokuSize;i++)
   	    {
-	        cout << Ans[i] << " ";
-	        if(i % 12 == 11)
-		    cout << endl;
+		if(copy[i] != map[i])
+		{
+		    cout << "2" << endl;
+		    exit(1);
+		}
+	    }
+	    cout << "1" << endl;
+	    for(int i = 0;i < sudokuSize;i++)
+  	    {
+	        cout << copy[i] << ' ';
+	        if (i % 12 == 11)
+	            cout << endl;
 	    }
 	}
+	else
+	   cout << "0" << endl; 
 }
