@@ -1,0 +1,41 @@
+# pd2-sudoku
+執行檔案：(檔案都在資料夾中)
+1 make
+2./give_question > ques.txt
+3./solve < ques.txt
+
+Sudoku.cpp內分成三部分:
+一、出題
+  隨機出題:
+  1.先設一基本盤面
+  2.取亂數讓它鏡射、反轉、換排、換數字
+  3.挖空
+
+二、讀題
+  用cin直接讀進題目
+
+三、解題
+  1 找到第一個0
+  2 用迴圈帶數字進去試試看哪個才是答案
+  3 當沒有0且每個直排、橫排、九宮都為1-9時，即得答案。
+  
+class Sudoku
+{
+ public:
+  Sudoku();
+  void GiveQuestion(); //用來出題
+  void ReadIn();  //用來讀題
+  void Solve(); //用來解題
+  static const int sudokuSize = 144;
+
+ private:
+  int map[sudokuSize]; //用來存讀到的題目
+	int R; //隨機亂數，用來隨機使原始題目翻轉
+	bool checkUnity(int arr[]); //檢查每個直排與橫排
+	bool checkCell(int arr[]); //檢查九宮
+	int Ans[sudokuSize]; //用來存答案
+	int getFirstZeroIndex(); //用來找第一個0
+	bool isCorrect(); //用來確認直排、橫排與九宮皆是對的
+	bool Solution(); //遞迴填數字
+	int A; //用來存答案個數
+};
