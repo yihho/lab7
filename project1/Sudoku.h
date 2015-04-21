@@ -13,15 +13,15 @@ class Sudoku
 
     private:
         int map[sudokuSize];
-        int copy[sudokuSize];
 	int R;
 	bool checkUnity(int arr[]);
 	bool checkCell(int arr[]);
-	int Ans[sudokuSize];
-	int Ans_b[sudokuSize];
-	bool isCorrect();
-	int A;
-	bool check(int, int);
+	int ANS[sudokuSize];
+	int ans[sudokuSize];
+	bool isCorrect(int arr[]);
+	bool check(int arr[], int, int);
 	void DFS(int);
 	void dfs(int);
+	bool SIGN;
+	bool sign;
 };

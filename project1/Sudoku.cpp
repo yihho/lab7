@@ -8,7 +8,8 @@ Sudoku::Sudoku()
 {
     for(int i = 1;i < sudokuSize;i++)
 	map[sudokuSize] = 0;
-	copy[sudokuSize] = 0;
+	ANS[sudokuSize] = 0;
+	ans[sudokuSize] = 0;
 }
 
 void Sudoku::GiveQuestion()
@@ -124,7 +125,7 @@ void Sudoku::GiveQuestion()
 	    i--;
     }
 
-    for(int i = 0;i < 10;i++) //挖洞
+    for(int i = 0;i < 50;i++) //挖洞
     {
 	int r = rand() % 144;
 	if(Question[r] != 0)
@@ -149,7 +150,12 @@ void Sudoku::ReadIn()
     for(int i = 0;i < sudokuSize;i++)
     {
 	cin >> map[i];
-	copy[i] = map[i];
+    }
+
+    for(int i = 0;i < sudokuSize;i++)
+    {
+	ANS[i] = map[i];
+	ans[i] = map[i];
     }
 }
 
@@ -197,18 +203,18 @@ bool Sudoku::checkCell(int arr[] )
     return true;
 }
 
-bool Sudoku::check(int n, int key)
+bool Sudoku::check(int arr[], int n, int key)
 {
     for(int i = 0;i < 12;i++)    //check rows
     {
 	int j = (n / 12) * 12 + i;
-	if(map[j] == key)
+	if(arr[j] == key)
 	    return false;
     }
     
     for(int i = 0;i < 144;i += 12)    //check columns
     {
-	if(map[(n % 12) + i] == key)
+	if(arr[(n % 12) + i] == key)
 	    return false;
     }
     
@@ -219,26 +225,23 @@ bool Sudoku::check(int n, int key)
     for(int x = 0;x < 9;x++)
     {
         int l  = 36 * (k / 4) + 3 * (k % 4) + 12 * (x / 3) + (x % 3);
-	if(map[l] == key)
+	if(arr[l] == key)
 	   return false;
     }
     return true;
 }
 
+bool SIGN = false;
 void Sudoku::DFS(int n)
 {
     if(n > 143)
     {
-	for(int i = 0;i < 144;i++)
-	{
-	    Ans[i] = copy[i];
-	}
+	SIGN = true;
     	return;
     }
-        
     else
     {
-	if(copy[n] != 0)
+	if(ANS[n] != 0)
         {
 	    DFS(n + 1);
         }
@@ -247,49 +250,56 @@ void Sudoku::DFS(int n)
         {
 	    for(int i = 1;i <= 9;i++)
 	    {
-	        if(check(n, i))
+	        if(check(ANS, n, i))
 	        {
-	            copy[n] = i;
-		    DFS(n + 1);		   
+	            ANS[n] = i;
+		    DFS(n + 1);	
+
+		    if(SIGN == true)
+			return;
+		    else
+			ANS[n] = 0;	   
 		}
 	    }
 	}
     }
 }
 
+bool sign = false;
 void Sudoku::dfs(int n)
 {
-    if(n > 143)
+    if(n < 0)
     {
-	for(int i = 0;i < 144;i++)
-	{
-	    Ans_b[i] = map[i];
-	}
+	sign = true;
     	return;
     }
-        
     else
     {
-	if(map[n] != 0)
+	if(ans[n] != 0)
         {
-	    dfs(n + 1);
+	    dfs(n - 1);
         }
 
         else
         {
-	    for(int i = 1;i <= 9;i++)
+	    for(int i = 9;i >= 1;i--)
 	    {
-	        if(check(n, i))
+	        if(check(ans, n, i))
 	        {
-	            map[n] = i;
-		    dfs(n + 1);		  
+	            ans[n] = i;
+		    dfs(n - 1);		
+
+		    if(sign == true)
+			return;
+		    else
+			ans[n] = 0;  
 		}
 	    }
 	}
     }
 }
 
-bool Sudoku::isCorrect()
+bool Sudoku::isCorrect(int arr[])
 {
     bool check_result;
     int check_arr[12];
@@ -298,7 +308,7 @@ bool Sudoku::isCorrect()
     for(int i = 0;i < 144;i = i + 12) //check rows
     {
 	for(int j = 0;j < 12;++j)
-	    check_arr[j] = map[i + j];	
+	    check_arr[j] = arr[i + j];	
 	
 	check_result = checkUnity(check_arr);
 	if(check_result == false)
@@ -308,7 +318,7 @@ bool Sudoku::isCorrect()
     for( int i = 0;i < 12;++i) //check columns
     {
 	for(int j = 0;j < 12;++j)
-	    check_arr[j] = map[i + 12 * j];
+	    check_arr[j] = arr[i + 12 * j];
 	
 	check_result = checkUnity(check_arr);
 	if(check_result == false)
@@ -320,7 +330,7 @@ bool Sudoku::isCorrect()
 	for(int j = 0;j < 9;j++)
 	{	
 	    location = 36 * (i / 4) + 3 * (i % 4) + 12 * (j / 3) + (j % 3);
-            check_arr[j] = map[location];
+            check_arr[j] = arr[location];
 	}
         check_result = checkCell(check_arr);
 	if(check_result == false)  
@@ -332,23 +342,27 @@ bool Sudoku::isCorrect()
 void Sudoku::Solve()
 {
 	DFS(0);
-	dfs(0);
-	if(isCorrect())
+	dfs(143);
+
+	if(isCorrect(ANS) || isCorrect(ans))
 	{
+	    int W = 0;
 	    for(int i = 0;i < sudokuSize;i++)
-  	    {
-		if(copy[i] != map[i])
-		{
-		    cout << "2" << endl;
-		    exit(1);
+	    {
+	        if(ANS[i] != ans[i])
+		    W++;
+	    } 
+	    if(W != 0)
+	        cout << "2" << endl;
+  	    else
+	    {
+	        cout << "1" << endl;
+	        for(int i = 0;i < sudokuSize;i++)
+  	        {   
+	            cout << ANS[i] << ' ' ;
+	            if (i % 12 == 11)
+	                cout << endl;
 		}
-	    }
-	    cout << "1" << endl;
-	    for(int i = 0;i < sudokuSize;i++)
-  	    {
-	        cout << copy[i] << ' ';
-	        if (i % 12 == 11)
-	            cout << endl;
 	    }
 	}
 	else
