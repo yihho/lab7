@@ -1,6 +1,9 @@
-all: Sudoku.o give_question.cpp solve.cpp
-	g++ -o give_question give_question.cpp Sudoku.o
-	g++ -o solve solve.cpp Sudoku.o
+main:main.o lab5.o
+	g++ -o main main.o lab5.o
 
-Sudoku.o: Sudoku.cpp Sudoku.h
-	g++ -c Sudoku.cpp -o Sudoku.o
+main.o:main.cpp lab5.h
+	g++ -c main.cpp
+
+lab5.o:lab5.cpp lab5.h
+	g++ -c lab5.cpp
+
